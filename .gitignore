@@ -1,0 +1,5 @@
+node_modules/
+.env
+aresta.sqlite
+aresta.sqlite-shm
+aresta.sqlite-wal

@@ -1,17 +1,32 @@
 # Aresta Restaurant Website
 
-A responsive single-page restaurant website for Aresta, built with plain HTML, CSS, and JavaScript—no build step or dependencies required.
+An upscale, dark, responsive restaurant site with an interactive menu, Stripe-hosted online checkout, a photo gallery, and reservation requests saved to SQLite.
 
 ## Run locally
 
-Open `index.html` in a browser, or serve this directory with any static file server. For example:
+Requires Node.js 20 or newer.
 
 ```bash
-python3 -m http.server 8000
+npm install
+cp .env.example .env
+npm start
 ```
 
-Then visit <http://localhost:8000>.
+Open <http://localhost:3000>. Without Stripe configured, browsing and reservation requests work; online checkout returns an informative setup message.
 
-## Customize
+## Configure Stripe checkout
 
-Update the address, phone, email, opening hours, menu items, and reservation details in `index.html`. The reservation form is a front-end demo only; connect it to a booking service or backend before using it to accept real bookings. Photography is loaded from Unsplash and fonts from Google Fonts.
+1. Create a Stripe account and use a test secret key from the Stripe Dashboard.
+2. Add `STRIPE_SECRET_KEY=sk_test_...` to `.env`.
+3. Set `BASE_URL` to the public HTTPS address when deployed (for example `https://your-domain.example`).
+4. Configure Stripe webhooks for production payment fulfilment. Do not mark an order fulfilled based only on the browser's success redirect; verify `checkout.session.completed` server-side.
+
+Prices and product names are defined on the server in `server.js`; never trust prices from the browser. Stripe Checkout collects payment securely. Current checkout is configured for pickup-style ordering and does not calculate tax, delivery, or pickup slots; configure those business rules before taking live orders.
+
+## Reservations
+
+`POST /api/reservations` validates requests and stores them in `aresta.sqlite` with `pending` status. This is a working request-capture backend, not an instant confirmed-booking/availability system: the restaurant must review requests and contact guests. Before production, add staff notifications, a reservation management workflow, privacy/retention policies, backups, HTTPS, and appropriate abuse protection. The displayed restaurant address and contact information are sample content and should be replaced with real business details.
+
+## Image credits
+
+Photography is loaded from Unsplash. Google Fonts provides DM Sans and Playfair Display.
